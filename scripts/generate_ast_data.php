@@ -154,7 +154,6 @@ $names = [
 
 $listNodes = [
 	'ZEND_AST_ARG_LIST',
-	'ZEND_AST_LIST',
 	'ZEND_AST_ARRAY',
 	'ZEND_AST_ENCAPS_LIST',
 	'ZEND_AST_EXPR_LIST',

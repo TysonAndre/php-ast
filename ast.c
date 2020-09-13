@@ -726,7 +726,7 @@ static void ast_fill_children_ht(HashTable *ht, zend_ast *ast, ast_state_info_t 
 				ast_create_virtual_node_ex(
 					&child_zv, ZEND_AST_STMT_LIST, 0, zend_ast_get_lineno(ast), state, 0);
 			}
-		} else if (state->version >= 60 && i == 1
+		} else if (i == 1
 				&& (ast_kind == ZEND_AST_FUNC_DECL || ast_kind == ZEND_AST_METHOD)) {
 			/* Skip "uses" child, it is only relevant for closures */
 			continue;
@@ -764,7 +764,7 @@ static void ast_fill_children_ht(HashTable *ht, zend_ast *ast, ast_state_info_t 
 
 #if PHP_VERSION_ID < 70100
 	/* Emulate docComment on constants, which is not available in PHP 7.0 */
-	if (state->version >= 60 && ast_kind == ZEND_AST_CONST_ELEM) {
+	if (ast_kind == ZEND_AST_CONST_ELEM) {
 		zval tmp;
 		ZVAL_NULL(&tmp);
 		zend_hash_add_new(ht, AST_STR(str_docComment), &tmp);
@@ -863,36 +863,12 @@ static void ast_to_zval(zval *zv, zend_ast *ast, ast_state_info_t *state) {
 				ast_to_zval(zv, ast->child[0], state);
 				return;
 			}
+			break;
 #endif
 #if PHP_VERSION_ID >= 70400
-		case ZEND_AST_PROP_GROUP:
-			if (state->version < 70) {
-				// In versions less than 70, just omit property type information entirely.
-				// ast->child is [type_ast, prop_ast]
-				ast_to_zval(zv, ast->child[1], state);
-				// The property visibility is on the AST_PROP_GROUP node.
-				// Add it to the AST_PROP_DECL node for old
-				ast_update_property_long(zv, AST_STR(str_flags), ast->attr, AST_CACHE_SLOT_FLAGS);
-				return;
-			}
-			break;
 		case ZEND_AST_ASSIGN_COALESCE:
 			ast->kind = ZEND_AST_ASSIGN_OP;
 			ast->attr = AST_BINARY_COALESCE;
-			break;
-		case ZEND_AST_CLASS_NAME:
-			if (state->version < 70) {
-				zval name_zval;
-				ast_to_zval(&name_zval, ast->child[0], state);
-				zval class_name_zval;
-				ast_create_virtual_node_ex(
-						&class_name_zval, AST_NAME, ast->child[0]->attr, zend_ast_get_lineno(ast), state, 1, &name_zval);
-				zval const_zval;
-				ZVAL_STR_COPY(&const_zval, AST_STR(str_class));
-				ast_create_virtual_node_ex(
-						zv, ZEND_AST_CLASS_CONST, 0, zend_ast_get_lineno(ast), state, 2, &class_name_zval, &const_zval);
-				return;
-			}
 			break;
 #ifdef ZEND_PARENTHESIZED_CONCAT
 		case ZEND_AST_BINARY_OP:
@@ -903,7 +879,7 @@ static void ast_to_zval(zval *zv, zend_ast *ast, ast_state_info_t *state) {
 #endif
 #else
 		case ZEND_AST_CLASS_CONST:
-			if (state->version >= 70) {
+			{
 				// Convert to an AST_CLASS_NAME instead. This is the opposite of the work done in the ZEND_AST_CLASS_NAME case.
 				zend_ast *const_name_ast = ast->child[1];
 				zend_string *str = zend_ast_get_str(const_name_ast);
@@ -983,7 +959,7 @@ static void ast_to_zval(zval *zv, zend_ast *ast, ast_state_info_t *state) {
 
 	ast_fill_children_ht(Z_ARRVAL(children_zv), ast, state);
 #if PHP_VERSION_ID < 70400
-	if (ast->kind == ZEND_AST_PROP_DECL && state->version >= 70) {
+	if (ast->kind == ZEND_AST_PROP_DECL) {
 		zval type_zval;
 		zval prop_group_zval;
 		ZVAL_COPY_VALUE(&prop_group_zval, zv);
@@ -1014,11 +990,12 @@ static void ast_to_zval(zval *zv, zend_ast *ast, ast_state_info_t *state) {
 #endif
 }
 
-static const zend_long versions[] = {50, 60, 70, 80};
+static const zend_long versions[] = {70, 80};
 static const size_t versions_count = sizeof(versions)/sizeof(versions[0]);
 
 static inline zend_bool ast_version_deprecated(zend_long version) {
-	return version < 70;
+	/* Currently no deprecated versions */
+	return 0;
 }
 
 static zend_string *ast_version_info() {

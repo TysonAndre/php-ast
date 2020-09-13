@@ -19,11 +19,6 @@ PHP;
 $node = ast\parse_code($code, $version=70);
 $version_70_repr = ast_dump($node);
 echo $version_70_repr . "\n";
-$node50 = ast\parse_code($code, $version=50);
-$version_50_repr = ast_dump($node50);
-echo "Same representation in version 50/70: ";
-var_export($version_50_repr == $version_70_repr);
-echo "\n";
 ?>
 --EXPECTF--
 AST_STMT_LIST
@@ -100,6 +95,3 @@ AST_STMT_LIST
                     key: null
             returnType: null
             __declId: 3
-
-Deprecated: ast\parse_code(): Version 50 is deprecated in %s.php on line 17
-Same representation in version 50/70: true

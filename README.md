@@ -462,7 +462,6 @@ AST_CONST_DECL
 AST_ENCAPS_LIST           // interpolated string: "foo$bar"
 AST_EXPR_LIST
 AST_IF
-AST_LIST
 AST_MATCH_ARM_LIST        // php 8.0+ match
 AST_NAME_LIST
 AST_PARAM_LIST

@@ -2,7 +2,6 @@
 
 const zend_ast_kind ast_kinds[] = {
 	ZEND_AST_ARG_LIST,
-	ZEND_AST_LIST,
 	ZEND_AST_ARRAY,
 	ZEND_AST_ENCAPS_LIST,
 	ZEND_AST_EXPR_LIST,
@@ -113,7 +112,6 @@ const size_t ast_kinds_count = sizeof(ast_kinds) / sizeof(ast_kinds[0]);
 const char *ast_kind_to_name(zend_ast_kind kind) {
 	switch (kind) {
 		case ZEND_AST_ARG_LIST: return "AST_ARG_LIST";
-		case ZEND_AST_LIST: return "AST_LIST";
 		case ZEND_AST_ARRAY: return "AST_ARRAY";
 		case ZEND_AST_ENCAPS_LIST: return "AST_ENCAPS_LIST";
 		case ZEND_AST_EXPR_LIST: return "AST_EXPR_LIST";
@@ -725,7 +723,6 @@ zend_string *ast_kind_child_name(zend_ast_kind kind, uint32_t child) {
 
 void ast_register_kind_constants(INIT_FUNC_ARGS) {
 	REGISTER_NS_LONG_CONSTANT("ast", "AST_ARG_LIST", ZEND_AST_ARG_LIST, CONST_CS | CONST_PERSISTENT);
-	REGISTER_NS_LONG_CONSTANT("ast", "AST_LIST", ZEND_AST_LIST, CONST_CS | CONST_PERSISTENT);
 	REGISTER_NS_LONG_CONSTANT("ast", "AST_ARRAY", ZEND_AST_ARRAY, CONST_CS | CONST_PERSISTENT);
 	REGISTER_NS_LONG_CONSTANT("ast", "AST_ENCAPS_LIST", ZEND_AST_ENCAPS_LIST, CONST_CS | CONST_PERSISTENT);
 	REGISTER_NS_LONG_CONSTANT("ast", "AST_EXPR_LIST", ZEND_AST_EXPR_LIST, CONST_CS | CONST_PERSISTENT);
