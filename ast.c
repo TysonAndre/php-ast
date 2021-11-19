@@ -46,10 +46,11 @@
 #define ast_register_flag_constant(name, value) \
 	REGISTER_NS_LONG_CONSTANT("ast\\flags", name, value, CONST_CS | CONST_PERSISTENT)
 
-#define AST_CACHE_SLOT_KIND     &AST_G(cache_slots)[3 * 0]
-#define AST_CACHE_SLOT_FLAGS    &AST_G(cache_slots)[3 * 1]
-#define AST_CACHE_SLOT_LINENO   &AST_G(cache_slots)[3 * 2]
-#define AST_CACHE_SLOT_CHILDREN &AST_G(cache_slots)[3 * 3]
+#define AST_CACHE_SLOT_KIND       &AST_G(cache_slots)[3 * 0]
+#define AST_CACHE_SLOT_FLAGS      &AST_G(cache_slots)[3 * 1]
+#define AST_CACHE_SLOT_LINENO     &AST_G(cache_slots)[3 * 2]
+#define AST_CACHE_SLOT_CHILDREN   &AST_G(cache_slots)[3 * 3]
+#define AST_CACHE_SLOT_END_LINENO &AST_G(cache_slots)[3 * 4]
 
 #define AST_CURRENT_VERSION 90
 
@@ -1015,7 +1016,7 @@ static void ast_to_zval(zval *zv, zend_ast *ast, ast_state_info_t *state) {
 
 		ast_update_property_long(zv, AST_STR(str_flags), decl->flags, AST_CACHE_SLOT_FLAGS);
 
-		ast_update_property_long(zv, AST_STR(str_endLineno), decl->end_lineno, NULL);
+		ast_update_property_long(zv, AST_STR(str_endLineno), decl->end_lineno, AST_CACHE_SLOT_END_LINENO);
 
 		if (decl->name) {
 			ZVAL_STR(&tmp_zv, decl->name);
@@ -1518,6 +1519,7 @@ PHP_MINIT_FUNCTION(ast) {
 	ast_declare_property(ast_node_ce, AST_STR(str_flags), &zv_null);
 	ast_declare_property(ast_node_ce, AST_STR(str_lineno), &zv_null);
 	ast_declare_property(ast_node_ce, AST_STR(str_children), &zv_null);
+	ast_declare_property(ast_node_ce, AST_STR(str_endLineno), &zv_null);
 
 	INIT_CLASS_ENTRY(tmp_ce, "ast\\Metadata", NULL);
 	ast_metadata_ce = zend_register_internal_class(&tmp_ce);
