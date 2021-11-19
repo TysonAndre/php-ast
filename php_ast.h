@@ -23,7 +23,7 @@ extern zend_module_entry ast_module_entry;
 
 // PHP 7.4 added a 3rd cache slot for property_info
 // and expects cache_slot[2] to be null.
-#define AST_NUM_CACHE_SLOTS (3 * 4)
+#define AST_NUM_CACHE_SLOTS (3 * 5)
 
 ZEND_BEGIN_MODULE_GLOBALS(ast)
 	void *cache_slots[AST_NUM_CACHE_SLOTS];

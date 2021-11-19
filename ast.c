@@ -1390,7 +1390,9 @@ PHP_RSHUTDOWN_FUNCTION(ast) {
 PHP_MINIT_FUNCTION(ast) {
 	zend_class_entry tmp_ce;
 	zval zv_null;
+	zval zv_undef;
 	ZVAL_NULL(&zv_null);
+	ZVAL_UNDEF(&zv_undef);
 
 #define X(str) \
 	AST_STR(str_ ## str) = zend_new_interned_string( \
@@ -1519,7 +1521,7 @@ PHP_MINIT_FUNCTION(ast) {
 	ast_declare_property(ast_node_ce, AST_STR(str_flags), &zv_null);
 	ast_declare_property(ast_node_ce, AST_STR(str_lineno), &zv_null);
 	ast_declare_property(ast_node_ce, AST_STR(str_children), &zv_null);
-	ast_declare_property(ast_node_ce, AST_STR(str_endLineno), &zv_null);
+	ast_declare_property(ast_node_ce, AST_STR(str_endLineno), &zv_undef);
 
 	INIT_CLASS_ENTRY(tmp_ce, "ast\\Metadata", NULL);
 	ast_metadata_ce = zend_register_internal_class(&tmp_ce);
